@@ -233,7 +233,7 @@ public class MainWindow extends javax.swing.JFrame {
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
         File fichero = dialogoSeleccionFichero();
-        res = metodosDOM.abrir_XML_DOM(fichero);
+        int res = metodosDOM.abrir_XML_DOM(fichero);
         if (res == 0) {
             estadoLabel.setText("Se ha creado el arbol correctamente");
         } else {
@@ -243,7 +243,7 @@ public class MainWindow extends javax.swing.JFrame {
 
     private void addLibroBotonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addLibroBotonActionPerformed
         // TODO add your handling code here:
-        res = metodosDOM.annadirLibroDOM(tituloText.getText(), autorText.getText(), annoText.getText());
+        int res = metodosDOM.annadirLibroDOM(tituloText.getText(), autorText.getText(), annoText.getText());
         if (res == 0) {
             estadoLabel.setText("Se ha añadido el libro correctamente");
         } else if (res == -1) {
@@ -260,7 +260,7 @@ public class MainWindow extends javax.swing.JFrame {
         // TODO add your handling code here:
         JFileChooser saveDOM = new JFileChooser();
         saveDOM.showSaveDialog(this);
-        res = metodosDOM.guardarDOMcomoFile(saveDOM.getSelectedFile());
+        int res = metodosDOM.guardarDOMcomoFile(saveDOM.getSelectedFile());
         if (res == 0) {
             estadoLabel.setText("Se ha guardado correctamente");
         } else if (res == -1) {
@@ -270,7 +270,7 @@ public class MainWindow extends javax.swing.JFrame {
 
     private void replaceButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_replaceButtonActionPerformed
         // TODO add your handling code here:
-        res = metodosDOM.replaceTitle(),
+        int res = metodosDOM.replaceTitle();
         if (metodosDOM.replaceTitle()==1){
             estadoLabel.setText("Se ha reemplazo correctamente");
         } else if (metodosDOM.replaceTitle()==0){
