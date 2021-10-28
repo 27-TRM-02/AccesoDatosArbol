@@ -150,7 +150,10 @@ public class MetodosDOM {
         try {
             // Crea un fichero llamado salida.xml
             // File archivo_xml = new File("salida.xml");
-            // Especifica el formato de salida
+            // Especifica el formato de salidaFile
+            if (!archivo.getAbsolutePath().endsWith(".xml")){
+                archivo.renameTo(new File(archivo.getAbsolutePath()+".xml"));
+            }
             OutputFormat format = new OutputFormat(doc);
             format.setIndenting(true);
             // salida indentada
@@ -164,6 +167,12 @@ public class MetodosDOM {
       
             return 1;
         }   
+    }
+    
+    public int replaceTitle(){
+        
+        
+        return 0;
     }
     
 }
