@@ -270,10 +270,10 @@ public class MainWindow extends javax.swing.JFrame {
 
     private void replaceButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_replaceButtonActionPerformed
         // TODO add your handling code here:
-        int res = metodosDOM.replaceTitle();
-        if (metodosDOM.replaceTitle()==1){
+        int res = metodosDOM.replaceTitle(tituloViejoText.getText(), tituloNuevoText.getText());
+        if (res==0){
             estadoLabel.setText("Se ha reemplazo correctamente");
-        } else if (metodosDOM.replaceTitle()==0){
+        } else {
             estadoLabel.setText("No se ha podido reemplazar. Revisa el título");
         }
     }//GEN-LAST:event_replaceButtonActionPerformed

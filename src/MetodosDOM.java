@@ -1,6 +1,4 @@
 
-import com.sun.org.apache.xml.internal.serialize.OutputFormat;
-import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
 import java.io.File;
 import java.io.FileOutputStream;
 import javax.xml.parsers.DocumentBuilder;
@@ -9,24 +7,26 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
+import com.sun.org.apache.xml.internal.serialize.OutputFormat;
+import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
+import javax.swing.JOptionPane;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 /**
  *
  * @author trm
  */
 public class MetodosDOM {
+
     Document doc;
+
     /**
-     * 
      * @param fichero
-     * @return 
+     * @return
      */
     public int abrir_XML_DOM(File fichero) {
         // doc representará el árbol DOM
@@ -49,30 +49,30 @@ public class MetodosDOM {
             return -1;
         }
     }
-    
+
     /**
-     * 
+     *
      * @param titulo
      * @param autor
      * @param anno
-     * @return 
+     * @return
      */
-    public int annadirLibroDOM(String titulo, String autor, String anno){
+    public int annadirLibroDOM(String titulo, String autor, String anno) {
         try {
             // Se crea un nodo tipo Element con nombre Titulo
             Node ntitulo = doc.createElement("Titulo");
             // Nodo texto con el titulo del libro
-            Node ntitulo_text = doc.createTextNode(titulo); 
+            Node ntitulo_text = doc.createTextNode(titulo);
             // Nodo texto como hijo de Titulo
             ntitulo.appendChild(ntitulo_text);
             // Hacemos lo mismo con el Element Autor
             Node nautor = doc.createElement("Autor");
-            Node nautor_text = doc.createTextNode(autor); 
+            Node nautor_text = doc.createTextNode(autor);
             nautor.appendChild(nautor_text);
             // Creamos Nodo Element de Libro
             Node nlibro = doc.createElement("Libro");
             // Al nodo Libro se le añade atributo "publicado_en"
-            ((Element)nlibro).setAttribute("publicado_en", anno);
+            ((Element) nlibro).setAttribute("publicado_en", anno);
             // Añadimos a libro los nodos Titulo y Autor
             nlibro.appendChild(ntitulo);
             nlibro.appendChild(nautor);
@@ -80,48 +80,78 @@ public class MetodosDOM {
             Node raiz = doc.getFirstChild();
             // añadimos como hijo Libro creado arriba
             raiz.appendChild(nlibro);
-            
+
             return 0;
         } catch (Exception e) {
             System.out.println(e.toString());
             return -1;
         }
     }
-    
+
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
-    public String recorrerDOMyMostrar(){
+    public String recorrerDOMyMostrar() {
         String salida = "";
         Node node;
-        String datos_nodo[]=null;
+        String datos_nodo[] = null;
         // Obtiene el primer nodo del DOM (primer hijo) = LIBROS
         Node raiz = doc.getFirstChild();
         // Obtiene lista de nodos con todos los nodos hijo del raíz = LIBRO * 3
         NodeList nodelist = raiz.getChildNodes();
         // Procesa los nodos hijos
-        for (int i=0; i<nodelist.getLength(); i++) {
+        for (int i = 0; i < nodelist.getLength(); i++) {
             node = nodelist.item(i);
-            
-            if (node.getNodeType()==Node.ELEMENT_NODE){
+
+            if (node.getNodeType() == Node.ELEMENT_NODE) {
                 // Es un nodo elemento = libro
                 datos_nodo = procesarLibro(node);
-                salida+= "\n " + "Publicado en: " + datos_nodo[0];
-                salida+= "\n " + "El Título es: " + datos_nodo[1];
-                salida+= "\n " + "El Autor es: " + datos_nodo[2];
-                salida+= "\n ----------------------------------";
+                salida += "\n " + "Publicado en: " + datos_nodo[0];
+                salida += "\n " + "El Título es: " + datos_nodo[1];
+                salida += "\n " + "El Autor es: " + datos_nodo[2];
+                salida += "\n ----------------------------------";
             }
-        }       
+        }
         return salida;
     }
-    
+
     /**
      * 
-     * @param n
+     * @param tituloViejo
+     * @param tituloNuevo
      * @return 
      */
-    private String[] procesarLibro(Node n){ // n= nodo libro
+    public int replaceTitle(String tituloViejo, String tituloNuevo) {
+        try {
+            NodeList listaTitulos = doc.getElementsByTagName("Titulo");
+            NodeList listaAutores = doc.getElementsByTagName("Autor");
+            for (int i=0; i < listaTitulos.getLength(); i++){
+                Node nTitulo = listaTitulos.item(i);
+                if (nTitulo.getFirstChild().getNodeValue().equals(tituloViejo)){
+                    String autor = listaAutores.item(i).getFirstChild().getNodeValue();
+                    // Yes = 0 ; No = 1 ; Cancell = 2 ;closeWindow = -1
+                    int res = JOptionPane.showConfirmDialog(null, "¿Estas seguro que quieres cambiar el libro "
+                            + tituloViejo +" del autor "+autor+"?");
+                    if (res == 0){
+                        nTitulo.getFirstChild().setTextContent(tituloNuevo);
+                    }
+                }
+            }
+            // Ha reemplazado correctamente
+            return 0;
+        } catch (Exception e) {
+            System.out.println(e.toString());
+            return -1;
+        }
+    }
+
+    /**
+     *
+     * @param n
+     * @return
+     */
+    private String[] procesarLibro(Node n) { // n= nodo libro
         String datos[] = new String[3];
         Node ntemp = null;
         int contador = 1;
@@ -134,25 +164,25 @@ public class MetodosDOM {
         for (int i = 0; i < nodos.getLength(); i++) {
             ntemp = nodos.item(i);
             // Comprobamos que es nodo Elemento (titulo y autor)
-            if(ntemp.getNodeType() == Node.ELEMENT_NODE){
+            if (ntemp.getNodeType() == Node.ELEMENT_NODE) {
                 datos[contador] = ntemp.getFirstChild().getNodeValue();
                 contador++;
             }
         }
         return datos;
     }
-    
+
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
-    public int guardarDOMcomoFile(File archivo){
+    public int guardarDOMcomoFile(File archivo) {
         try {
             // Crea un fichero llamado salida.xml
             // File archivo_xml = new File("salida.xml");
             // Especifica el formato de salidaFile
-            if (!archivo.getAbsolutePath().endsWith(".xml")){
-                archivo.renameTo(new File(archivo.getAbsolutePath()+".xml"));
+            if (!archivo.getAbsolutePath().endsWith(".xml")) {
+                archivo.renameTo(new File(archivo.getAbsolutePath() + ".xml"));
             }
             OutputFormat format = new OutputFormat(doc);
             format.setIndenting(true);
@@ -164,15 +194,9 @@ public class MetodosDOM {
             // Se ha ejecutado correctamente
             return 0;
         } catch (Exception e) {
-      
+
             return 1;
-        }   
+        }
     }
-    
-    public int replaceTitle(){
-        
-        
-        return 0;
-    }
-    
+
 }
